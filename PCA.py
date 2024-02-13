@@ -32,15 +32,15 @@ x_train, x_test, y_train, y_test = train_test_split(df, y_label, test_size=0.3, 
 # standardize data
 scalar = StandardScaler()
 scalar.fit(x_train) 
-x_train = scalar.transform(x_train)
-x_test = scalar.transform(x_test)
+x_train_scalar = scalar.transform(x_train)
+x_test_scalar = scalar.transform(x_test)
 
 # analyze data with PCA and LogisticRegression
-pca = PCA(0.95)
-fit = pca.fit(x_train) # fit = pca.fit(x_train)
-
-#x_train = pca.transform(x_train)
-#x_test = pca.transform(x_test)
+pca = PCA(0.9)
+fit = pca.fit(x_train_scalar) # fit = pca.fit(x_train)
+# fit = pca.fit(x_train)
+# x_train_trans = pca.transform(x_train_scalar)
+# x_test_trans = pca.transform(x_test_scalar)
 
 #logRegr = LogisticRegression(solver="lbfgs")
 #logRegr.fit(x_train, y_train)
@@ -51,13 +51,35 @@ fit = pca.fit(x_train) # fit = pca.fit(x_train)
 
 loadings = pd.DataFrame(abs(pca.components_), columns=df.columns).to_dict(orient="records")
 
-pc1_loadings = dict(sorted(loadings[0].items(), key=lambda item: item[1], reverse=True))
-pc2_loadings = dict(sorted(loadings[1].items(), key=lambda item: item[1], reverse=True))
-pc3_loadings = dict(sorted(loadings[2].items(), key=lambda item: item[1], reverse=True))
-
 # print analyzed data 
 #print("Explained Variance: %s" % fit.explained_variance_ratio_)
-print(pc3_loadings)
+
+feature_set = set()
+
+for i in range(len(fit.explained_variance_ratio_)):
+  names = []
+  for item in sorted(loadings[i].items(), key=lambda item: item[1], reverse=True):
+    if (item[1] > 0.1):
+      names.append(item[0])
+    else:
+      break
+  print(names)
+  x_train_selected= x_train[names]  
+  x_test_selected = x_test[names]
+
+  scalar.fit(x_train_selected) 
+  x_train_scalar_trans = scalar.transform(x_train_selected)
+  x_test_scalar_trans = scalar.transform(x_test_selected)
+  pca.fit(x_train_scalar_trans)
+
+  x_train_trans = pca.transform(x_train_scalar_trans)
+  x_test_trans = pca.transform(x_test_scalar_trans)
+
+  logRegr = LogisticRegression(solver="lbfgs")
+  logRegr.fit(x_train_trans, y_train)
+
+  logRegr.predict(x_test_trans[0:10])
+  print(logRegr.score(x_test_trans, y_test))
 
 
 """
