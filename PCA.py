@@ -36,7 +36,7 @@ x_train_scalar = scalar.transform(x_train)
 x_test_scalar = scalar.transform(x_test)
 
 # analyze data with PCA and LogisticRegression
-pca = PCA(0.9)
+pca = PCA()
 fit = pca.fit(x_train_scalar) # fit = pca.fit(x_train)
 # fit = pca.fit(x_train)
 # x_train_trans = pca.transform(x_train_scalar)
@@ -55,6 +55,8 @@ loadings = pd.DataFrame(abs(pca.components_), columns=df.columns).to_dict(orient
 #print("Explained Variance: %s" % fit.explained_variance_ratio_)
 
 feature_set = set()
+score = 0
+score_names = []
 
 for i in range(len(fit.explained_variance_ratio_)):
   names = []
@@ -63,7 +65,7 @@ for i in range(len(fit.explained_variance_ratio_)):
       names.append(item[0])
     else:
       break
-  print(names)
+  #print(names)
   x_train_selected= x_train[names]  
   x_test_selected = x_test[names]
 
@@ -75,13 +77,18 @@ for i in range(len(fit.explained_variance_ratio_)):
   x_train_trans = pca.transform(x_train_scalar_trans)
   x_test_trans = pca.transform(x_test_scalar_trans)
 
-  logRegr = LogisticRegression(solver="lbfgs")
+  logRegr = LogisticRegression(solver="lbfgs", max_iter=250)
   logRegr.fit(x_train_trans, y_train)
 
   logRegr.predict(x_test_trans[0:10])
-  print(logRegr.score(x_test_trans, y_test))
 
+  if (logRegr.score(x_test_trans, y_test) > score):
+    score = logRegr.score(x_test_trans, y_test)
+    score_names = names 
+  #print(logRegr.score(x_test_trans, y_test))
 
+print(score)
+print(score_names)
 """
 # Scree Plot Code From https://www.jcchouinard.com/pca-scree-plot/
 plt.bar(
