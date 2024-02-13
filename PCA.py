@@ -1,35 +1,64 @@
 import pandas as pd
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+
 
 # load data
-df = pd.read_csv("D:/Workspace/COMP_8085_AI/COMP8085_PROJECT1_NIDS/UNSW-NB15-BALANCED-TRAIN.csv", low_memory=False, keep_default_na=False)
-names = []
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", low_memory=False, keep_default_na=False)
+feature_names = []
+y_attack = df["attack_cat"]
+y_label = df["Label"]
+
 
 df = df.drop(["attack_cat", "Label"], axis=1)
 
 for idx, x in enumerate(df.dtypes):
   if df.dtypes.iloc[idx] == object:
     df[df.dtypes.index[idx]].astype('str')
-    names.append(df.dtypes.index[idx])
+    feature_names.append(df.dtypes.index[idx])
 
 df["sport"] = pd.to_numeric(df["sport"], errors="coerce")
 df["dsport"] = pd.to_numeric(df["dsport"], errors="coerce")
-df[names] = df[names].apply(lambda x: pd.factorize(x)[0])
+df[feature_names] = df[feature_names].apply(lambda x: pd.factorize(x)[0])
 
-# analyze data
-pca = PCA(n_components=3)
-fit = pca.fit(df)
+x_train, x_test, y_train, y_test = train_test_split(df, y_label, test_size=0.3, random_state=1)
+
+# standardize data
+scalar = StandardScaler()
+scalar.fit(x_train) 
+x_train = scalar.transform(x_train)
+x_test = scalar.transform(x_test)
+
+# analyze data with PCA and LogisticRegression
+pca = PCA(0.95)
+fit = pca.fit(x_train) # fit = pca.fit(x_train)
+
+#x_train = pca.transform(x_train)
+#x_test = pca.transform(x_test)
+
+#logRegr = LogisticRegression(solver="lbfgs")
+#logRegr.fit(x_train, y_train)
+
+#logRegr.predict(x_test[0:10])
+#print(logRegr.score(x_test, y_test))
+
 
 loadings = pd.DataFrame(abs(pca.components_), columns=df.columns).to_dict(orient="records")
+
 pc1_loadings = dict(sorted(loadings[0].items(), key=lambda item: item[1], reverse=True))
 pc2_loadings = dict(sorted(loadings[1].items(), key=lambda item: item[1], reverse=True))
 pc3_loadings = dict(sorted(loadings[2].items(), key=lambda item: item[1], reverse=True))
 
 # print analyzed data 
-print("Explained Variance: %s" % fit.explained_variance_ratio_)
+#print("Explained Variance: %s" % fit.explained_variance_ratio_)
 print(pc3_loadings)
+
 
 """
 # Scree Plot Code From https://www.jcchouinard.com/pca-scree-plot/
