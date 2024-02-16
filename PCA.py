@@ -7,14 +7,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-
 # load data
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", low_memory=False, keep_default_na=False)
 feature_names = []
-y_attack = df["attack_cat"]
+y_attack = pd.factorize(df["attack_cat"])[0]
 y_label = df["Label"]
-
 
 df = df.drop(["attack_cat", "Label"], axis=1)
 
@@ -36,24 +34,15 @@ x_train_scalar = scalar.transform(x_train)
 x_test_scalar = scalar.transform(x_test)
 
 # analyze data with PCA and LogisticRegression
-pca = PCA()
-fit = pca.fit(x_train_scalar) # fit = pca.fit(x_train)
-# fit = pca.fit(x_train)
-# x_train_trans = pca.transform(x_train_scalar)
-# x_test_trans = pca.transform(x_test_scalar)
-
-#logRegr = LogisticRegression(solver="lbfgs")
-#logRegr.fit(x_train, y_train)
-
-#logRegr.predict(x_test[0:10])
-#print(logRegr.score(x_test, y_test))
-
+pca = PCA(3)
+fit = pca.fit(x_train_scalar) 
 
 loadings = pd.DataFrame(abs(pca.components_), columns=df.columns).to_dict(orient="records")
 
-# print analyzed data 
-#print("Explained Variance: %s" % fit.explained_variance_ratio_)
+# print explained variance
+print("Explained Variance: %s" % fit.explained_variance_ratio_)
 
+# analyze data
 feature_set = set()
 score = 0
 score_names = []
@@ -65,7 +54,7 @@ for i in range(len(fit.explained_variance_ratio_)):
       names.append(item[0])
     else:
       break
-  #print(names)
+  
   x_train_selected= x_train[names]  
   x_test_selected = x_test[names]
 
@@ -85,7 +74,6 @@ for i in range(len(fit.explained_variance_ratio_)):
   if (logRegr.score(x_test_trans, y_test) > score):
     score = logRegr.score(x_test_trans, y_test)
     score_names = names 
-  #print(logRegr.score(x_test_trans, y_test))
 
 print(score)
 print(score_names)
