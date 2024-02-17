@@ -3,17 +3,25 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import precision_score
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import time
+
+start = time.time()
 
 # load data
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", low_memory=False, keep_default_na=False)
+#df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", low_memory=False, keep_default_na=False)
+df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", skipinitialspace=True, low_memory=False, keep_default_na=False)
+df = df.replace(r'\s+', '', regex=True)
+df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
+df = df.drop_duplicates()
+
 feature_names = []
 y_attack = pd.factorize(df["attack_cat"])[0]
 y_label = df["Label"]
-
 df = df.drop(["attack_cat", "Label"], axis=1)
 
 for idx, x in enumerate(df.dtypes):
@@ -25,7 +33,7 @@ df["sport"] = pd.to_numeric(df["sport"], errors="coerce")
 df["dsport"] = pd.to_numeric(df["dsport"], errors="coerce")
 df[feature_names] = df[feature_names].apply(lambda x: pd.factorize(x)[0])
 
-x_train, x_test, y_train, y_test = train_test_split(df, y_label, test_size=0.3, random_state=1)
+x_train, x_test, y_train, y_test = train_test_split(df, y_attack, test_size=0.3, random_state=1)
 
 # standardize data
 scalar = StandardScaler()
@@ -34,13 +42,13 @@ x_train_scalar = scalar.transform(x_train)
 x_test_scalar = scalar.transform(x_test)
 
 # analyze data with PCA and LogisticRegression
-pca = PCA(3)
+pca = PCA()
 fit = pca.fit(x_train_scalar) 
 
 loadings = pd.DataFrame(abs(pca.components_), columns=df.columns).to_dict(orient="records")
 
 # print explained variance
-print("Explained Variance: %s" % fit.explained_variance_ratio_)
+#print("Explained Variance: %s" % fit.explained_variance_ratio_)
 
 # analyze data
 feature_set = set()
@@ -66,17 +74,19 @@ for i in range(len(fit.explained_variance_ratio_)):
   x_train_trans = pca.transform(x_train_scalar_trans)
   x_test_trans = pca.transform(x_test_scalar_trans)
 
-  logRegr = LogisticRegression(solver="lbfgs", max_iter=250)
+  logRegr = LogisticRegression(solver="lbfgs", max_iter=1500) 
   logRegr.fit(x_train_trans, y_train)
 
-  logRegr.predict(x_test_trans[0:10])
-
+  logRegr.predict(x_test_trans[0:len(y_test)])
   if (logRegr.score(x_test_trans, y_test) > score):
     score = logRegr.score(x_test_trans, y_test)
     score_names = names 
 
 print(score)
 print(score_names)
+
+end = time.time()
+print(end - start)
 """
 # Scree Plot Code From https://www.jcchouinard.com/pca-scree-plot/
 plt.bar(
