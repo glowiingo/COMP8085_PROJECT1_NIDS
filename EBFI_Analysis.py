@@ -1,9 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Temp test running
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+
 LABEL_INFOGAIN_PNG = 'label_infogain.png'
 ATTACK_INFOGAIN_PNG = 'attack_cat_infogain.png'
-
 
 class ebfi_analysis:
     # assuming that the dataframe has been preprocessed and split
@@ -104,25 +108,31 @@ class ebfi_analysis:
         return self.entropy(self.label_train)
     
     def get_attack_cat_entropy(self):
-        return self.entropy(self.label_train)
+        return self.entropy(self.attack_cat_train)
     
     # label_infogain_dict = {}
     # attack_cat_infogain_dict = {}
 
     def get_label_infogain(self):
+        print("Running code for getting information gain data on all feature columns for EBFI Analysis on Labels...")
         label_infogain_dict = {}
+        label_entropy = self.get_label_entropy()
+        print("LABEL ENTROPY: ", label_entropy)
         for c in self.x_train.columns:
             new_entropy = self.proportionate_class_entropy(self.x_train[c], self.label_train)
-            label_infogain_dict[c] = self.get_label_entropy() - new_entropy
-            print("%s %.5f" % (c, self.get_label_entropy() - new_entropy))
+            label_infogain_dict[c] = label_entropy - new_entropy
+            print("%s %.5f" % (c, label_infogain_dict[c]))
         return label_infogain_dict
     
     def get_attack_cat_infogain(self):
+        print("Running code for getting information gain data on all feature columns for EBFI Analysis on Attack Category...")
         attack_cat_infogain_dict = {}
+        attack_cat_entropy = self.get_attack_cat_entropy()
+        print("ATTACK_CAT ENTROPY: ", attack_cat_entropy)
         for c in self.x_train.columns:
             new_entropy = self.proportionate_class_entropy(self.x_train[c], self.attack_cat_train)
-            attack_cat_infogain_dict[c] = self.get_attack_cat_entropy() - new_entropy
-            print("%s %.5f" % (c, self.get_attack_cat_entropy() - new_entropy))
+            attack_cat_infogain_dict[c] = attack_cat_entropy - new_entropy
+            print("%s %.5f" % (c, attack_cat_infogain_dict[c]))
         return attack_cat_infogain_dict
 
     # # print("========= INFORMATION GAIN FOR LABEL ===========")
@@ -170,10 +180,6 @@ class ebfi_analysis:
         print("Saved attack infomation gain bar plot in: {}".format(ATTACK_INFOGAIN_PNG))
 
 
-# Temp test running
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
 if __name__ == '__main__':
     df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", skipinitialspace=True)
     df = df.replace(r'\s+', '', regex=True)
