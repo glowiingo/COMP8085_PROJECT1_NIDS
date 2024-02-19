@@ -10,25 +10,6 @@ LABEL_INFOGAIN_PNG = 'label_infogain.png'
 ATTACK_INFOGAIN_PNG = 'attack_cat_infogain.png'
 
 class ebfi_analysis:
-    # assuming that the dataframe has been preprocessed and split
-    # def __init__(self, df, feature_cols=None, label_col=None, attack_cat_col=None):
-    #     self.dataframe = df
-    #     if label_col != None:
-    #         self.label_col = label_col
-    #     else:
-    #         self.label_col = df['Label']
-        
-    #     if attack_cat_col != None:
-    #         self.attack_cat_col = attack_cat_col
-    #     else:
-    #         self.attack_cat_col = df['attack_cat']
-        
-    #     if feature_cols != None:
-    #         self.feature_cols = feature_cols
-    #     else:
-    #         self.feature_cols == list(self.dataframe.columns[0:-2])
-    #         # removes label and attack_cat
-    
     def __init__(self, x_train, label_train, attack_cat_train):
         """
         Initializes the data required for Entropy Based Feature Importance Analysis
@@ -101,17 +82,11 @@ class ebfi_analysis:
         ents = self.class_entropy(feature, y)
         return sum(np.multiply(probs, ents)) # Information gain equation
 
-    # label_entropy = self.entropy(self.label_train)
-    # attack_cat_entropy = self.entropy(self.attack_cat_train)
-
     def get_label_entropy(self):
         return self.entropy(self.label_train)
     
     def get_attack_cat_entropy(self):
         return self.entropy(self.attack_cat_train)
-    
-    # label_infogain_dict = {}
-    # attack_cat_infogain_dict = {}
 
     def get_label_infogain(self):
         print("Running code for getting information gain data on all feature columns for EBFI Analysis on Labels...")
@@ -134,18 +109,6 @@ class ebfi_analysis:
             attack_cat_infogain_dict[c] = attack_cat_entropy - new_entropy
             print("%s %.5f" % (c, attack_cat_infogain_dict[c]))
         return attack_cat_infogain_dict
-
-    # # print("========= INFORMATION GAIN FOR LABEL ===========")
-    # for c in X.columns:
-    #     new_entropy = self.proportionate_class_entropy(self.x_train[c], label_train)
-    #     # print("%s %.5f" % (c, label_entropy - new_entropy))
-    #     label_infogain_dict[c] = label_entropy - new_entropy
-
-    # # print("========= INFORMATION GAIN FOR ATTACK_CAT ===========")
-    # for c in X.columns:
-    #     new_entropy = proportionate_class_entropy(self.x_train[c], attack_cat_train)
-    #     # print("%s %.5f" % (c, attack_cat_entropy - new_entropy))
-    #     attack_cat_infogain_dict[c] = attack_cat_entropy - new_entropy
 
     def plot(self, label_infogain_dict, attack_cat_infogain_dict):
         """

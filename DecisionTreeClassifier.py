@@ -22,7 +22,6 @@ class dtc:
         self.attack_cat_val = attack_cat_val
     
     # EXPERIMENT PART 1 - RUN CLASSIFIER WITHOUT SELECTED FEATURES
-
     def no_selected_features_label(self):
         print("Calculating Accuracy Score without using Selected Features for Label Prediction....")
         clf = DecisionTreeClassifier(criterion='entropy')
@@ -44,7 +43,6 @@ class dtc:
         print(metrics.classification_report(self.attack_cat_test, attack_pred, target_names=ATTACK_CAT_STR_VALUES))
 
     # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH SELECTED FEATURES
-
     def selected_features_label(self):
         print("Calculating Accuracy Score with Selected Features for Label...")
         clf = DecisionTreeClassifier(criterion='entropy')
@@ -102,7 +100,6 @@ if __name__ == '__main__':
     df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", skipinitialspace=True)
     df = df.replace(r'\s+', '', regex=True)
     df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
-    attack_cat_str_values = df['attack_cat'].unique()
 
     df['ct_flw_http_mthd'] = df['ct_flw_http_mthd'].astype('str')
     df['is_ftp_login'] = df['is_ftp_login'].astype('str')
