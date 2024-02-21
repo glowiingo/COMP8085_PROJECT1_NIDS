@@ -56,6 +56,7 @@ class dtc:
 
     def selected_features_attack(self):
         print("Calculating Accuracy Score with Selected Features for Attack Category...")
+        print("================= EBFI SELECTED FEATURES ===================")
         clf = DecisionTreeClassifier(criterion='entropy')
         x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_EBFI]
         x_test_selected_attack = self.x_test[SELECTED_FEATURES_ATTACK_CAT_EBFI]
@@ -63,6 +64,16 @@ class dtc:
         attack_pred = clf_attack.predict(x_test_selected_attack)
         acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
         print("Attack Category Prediction Accuracy of EBFI Selected Features: {:.2f}%".format(acc_score))
+        print(metrics.classification_report(self.attack_cat_test, attack_pred, target_names=ATTACK_CAT_STR_VALUES))
+        
+        print("================ RFE SELECTED FEATURES ===============")
+        clf = DecisionTreeClassifier(criterion='entropy')
+        x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_EBFI]
+        x_test_selected_attack = self.x_test[SELECTED_FEATURES_ATTACK_CAT_EBFI]
+        clf_attack = clf.fit(x_train_selected_attack, self.attack_cat_train)
+        attack_pred = clf_attack.predict(x_test_selected_attack)
+        acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
+        print("Attack Category Prediction Accuracy of RFE Selected Features: {:.2f}%".format(acc_score))
         print(metrics.classification_report(self.attack_cat_test, attack_pred, target_names=ATTACK_CAT_STR_VALUES))
 
     # PART 2 - Optimized the training and classifier so that best possible scores are retrieved for Labels
@@ -78,6 +89,17 @@ class dtc:
 
     # PART 3 - Optimized the training and classifier so that best possible scores are retrieved for Attack Category
     def optimal_training_selected_features_attack(self):
+        print("================ RFE SELECTED FEATURES ===============")
+        clf = DecisionTreeClassifier(criterion='entropy', max_depth = 16)
+        x_train_selected_attack_cat = self.x_train[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        clf_attack_cat = clf.fit(x_train_selected_attack_cat, self.attack_cat_train)
+        attack_cat_pred = clf_attack_cat.predict(x_val_selected_attack_cat)
+        classifier_name = "Decision Tree Classifier"
+        print("\nClassifier: {}\n".format(classifier_name))
+        print(metrics.classification_report(self.attack_cat_val, attack_cat_pred, target_names=ATTACK_CAT_STR_VALUES))
+
+        print("================= EBFI SELECTED FEATURES ===================")
         clf = DecisionTreeClassifier(criterion='entropy', max_depth = 19)
         x_train_selected_attack_cat = self.x_train[SELECTED_FEATURES_ATTACK_CAT_EBFI]
         x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_EBFI]

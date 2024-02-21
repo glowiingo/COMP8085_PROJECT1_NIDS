@@ -1,15 +1,16 @@
-SELECTED_FEATURES_LABEL_RFE = ['srcip', 'dstip', 'dsport', 'proto', 
-                               'dur', 'sbytes', 'dbytes', 'sttl', 'dttl', 
-                               'sloss', 'dloss', 'service', 'Spkts', 'swin', 'stcpb', 
-                               'smeansz', 'dmeansz', 'res_bdy_len', 'Djit', 
-                               'Stime', 'Ltime', 'Dintpkt', 'tcprtt', 'synack', 
-                               'ct_state_ttl', 'ct_flw_http_mthd', 'ct_srv_src', 'ct_srv_dst', 
-                               'ct_src_dport_ltm', 'ct_dst_sport_ltm', 'ct_dst_src_ltm']
+# CHOSE TO USE LABEL_RFE FOR FEATURES SELECTED
+SELECTED_FEATURES_LABEL_RFE = ['srcip', 'dstip', 'dsport', 'proto', 'dur', 
+                               'sbytes', 'dbytes', 'sttl', 'dttl', 'sloss', 
+                               'dloss', 'service', 'Spkts', 'swin', 'stcpb', 
+                               'smeansz', 'dmeansz', 'res_bdy_len', 'Djit', 'Stime', 
+                               'Ltime', 'Dintpkt', 'tcprtt', 'synack', 'ct_state_ttl', 
+                               'ct_flw_http_mthd', 'ct_srv_src', 'ct_srv_dst', 'ct_src_dport_ltm', 'ct_dst_sport_ltm', 'ct_dst_src_ltm']
 
-SELECTED_FEATURES_ATTACK_CAT_RFE = ['srcip', 'dsport', 'sbytes', 'dbytes', 
-                                    'sttl', 'dttl', 'sloss', 'dloss', 'service', 
-                                    'Spkts', 'swin', 'smeansz', 'dmeansz', 
-                                    'tcprtt', 'synack', 'ct_state_ttl', 'ct_srv_dst']
+# CHOSE TO USE ATTACK_CAT RFE FOR FEATURES SELECTED
+SELECTED_FEATURES_ATTACK_CAT_RFE = ['srcip', 'dsport', 'sbytes', 'dbytes', 'sttl',
+                                    'dttl', 'sloss', 'dloss', 'service', 'Spkts', 
+                                    'swin', 'smeansz', 'dmeansz', 'tcprtt', 'synack', 
+                                    'ct_state_ttl', 'ct_srv_dst']
 
 SELECTED_FEATURES_LABEL_PCA = ['Ltime', 'Stime', 'is_ftp_login', 
                                'ct_ftp_cmd', 'tcprtt', 'synack', 
