@@ -40,7 +40,7 @@ class dtc:
         attack_pred = clf_attack_cat.predict(self.x_test)
         acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
         print("Attack Category Prediction Accuracy on Decision Tree Classifier with No Selected Features: {:.2f}%\n".format(acc_score))
-        print(metrics.classification_report(self.attack_cat_test, attack_pred, target_names=ATTACK_CAT_STR_VALUES))
+        print(metrics.classification_report(self.attack_cat_test, attack_pred, labels=ATTACK_CAT_STR_VALUES))
 
     # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH SELECTED FEATURES
     def selected_features_label(self):
@@ -64,17 +64,7 @@ class dtc:
         attack_pred = clf_attack.predict(x_test_selected_attack)
         acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
         print("Attack Category Prediction Accuracy of RFE Selected Features: {:.2f}%".format(acc_score))
-        print(metrics.classification_report(self.attack_cat_test, attack_pred, target_names=ATTACK_CAT_STR_VALUES))
-        
-        # print("================= EBFI SELECTED FEATURES ===================")
-        # clf = DecisionTreeClassifier(criterion='entropy')
-        # x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_EBFI]
-        # x_test_selected_attack = self.x_test[SELECTED_FEATURES_ATTACK_CAT_EBFI]
-        # clf_attack = clf.fit(x_train_selected_attack, self.attack_cat_train)
-        # attack_pred = clf_attack.predict(x_test_selected_attack)
-        # acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
-        # print("Attack Category Prediction Accuracy of EBFI Selected Features: {:.2f}%".format(acc_score))
-        # print(metrics.classification_report(self.attack_cat_test, attack_pred, target_names=ATTACK_CAT_STR_VALUES))
+        print(metrics.classification_report(self.attack_cat_test, attack_pred, labels=ATTACK_CAT_STR_VALUES))
 
     # PART 2 - Optimized the training and classifier so that best possible scores are retrieved for Labels
     def optimal_training_selected_features_label(self):
@@ -97,17 +87,7 @@ class dtc:
         attack_cat_pred = clf_attack_cat.predict(x_val_selected_attack_cat)
         classifier_name = "Decision Tree Classifier"
         print("\nClassifier: {}\n".format(classifier_name))
-        print(metrics.classification_report(self.attack_cat_val, attack_cat_pred, target_names=ATTACK_CAT_STR_VALUES))
-
-        # print("================= EBFI SELECTED FEATURES ===================")
-        # clf = DecisionTreeClassifier(criterion='entropy', max_depth = 19)
-        # x_train_selected_attack_cat = self.x_train[SELECTED_FEATURES_ATTACK_CAT_EBFI]
-        # x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_EBFI]
-        # clf_attack_cat = clf.fit(x_train_selected_attack_cat, self.attack_cat_train)
-        # attack_cat_pred = clf_attack_cat.predict(x_val_selected_attack_cat)
-        # classifier_name = "Decision Tree Classifier"
-        # print("\nClassifier: {}\n".format(classifier_name))
-        # print(metrics.classification_report(self.attack_cat_val, attack_cat_pred, target_names=ATTACK_CAT_STR_VALUES))
+        print(metrics.classification_report(self.attack_cat_val, attack_cat_pred, labels=ATTACK_CAT_STR_VALUES))
 
     def get_experiment_data_part_one(self):
         print("============= PART ONE EXPERIMENTS =============")
@@ -121,8 +101,8 @@ class dtc:
 if __name__ == '__main__':
     df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", skipinitialspace=True)
     df = df.replace(r'\s+', '', regex=True)
-    # df.fillna('None', inplace=True)
-    df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
+    df.fillna("None", inplace=True)
+    # df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
 
     df['ct_flw_http_mthd'] = df['ct_flw_http_mthd'].astype('str')
     df['is_ftp_login'] = df['is_ftp_login'].astype('str')
@@ -132,7 +112,6 @@ if __name__ == '__main__':
     df["dsport"] = pd.to_numeric(df["dsport"], errors="coerce")
 
     # converting str to int
-    df['attack_cat'] = pd.factorize(df['attack_cat'])[0]
     df['proto'] = pd.factorize(df['proto'])[0]
     df['state'] = pd.factorize(df['state'])[0]
     df['service'] = pd.factorize(df['service'])[0]
@@ -148,6 +127,7 @@ if __name__ == '__main__':
     X_features = df[feature_cols] # Features
     label = df['Label'] # Variable
     attack_cat = df['attack_cat'] # Variable
+    # attack_cat = pd.factorize(attack_cat)[0]
     X_train, X_temp, attack_cat_train, attack_cat_temp, label_train, label_temp = train_test_split(
         X_features, attack_cat, label, test_size = 0.2, random_state = 1)
     X_test, X_val, attack_cat_test, attack_cat_val, label_test, label_val = train_test_split(
@@ -158,5 +138,5 @@ if __name__ == '__main__':
         attack_cat_train=attack_cat_train, attack_cat_test=attack_cat_test, attack_cat_val=attack_cat_val)
     
     DTC.get_experiment_data_part_one()
-    DTC.optimal_training_selected_features_attack()
     DTC.optimal_training_selected_features_label()
+    DTC.optimal_training_selected_features_attack()

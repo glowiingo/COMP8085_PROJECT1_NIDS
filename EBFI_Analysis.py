@@ -146,8 +146,6 @@ class ebfi_analysis:
 if __name__ == '__main__':
     df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", skipinitialspace=True)
     df = df.replace(r'\s+', '', regex=True)
-    df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
-    attack_cat_str_values = df['attack_cat'].unique()
 
     df['ct_flw_http_mthd'] = df['ct_flw_http_mthd'].astype('str')
     df['is_ftp_login'] = df['is_ftp_login'].astype('str')
