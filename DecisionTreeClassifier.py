@@ -68,7 +68,7 @@ class dtc:
     def train_model_no_features_selected_attack_cat(self):
         clf = DecisionTreeClassifier()
         clf_attack = clf.fit(self.x_train, self.attack_cat_train)
-        self.save_pickle(clf_attack, 'no_selected_features_entropy_dtc_attack.pkl')
+        # self.save_pickle(clf_attack, 'no_selected_features_entropy_dtc_attack.pkl')
         return clf_attack
 
     def no_selected_features_attack_cat(self):
@@ -135,7 +135,7 @@ class dtc:
     def optimal_training_selected_features_label(self):
         start = time.perf_counter()
         x_val_selected_label = self.x_val[SELECTED_FEATURES_LABEL_RFE]
-        clf_label = self.train_model_selected_features_label_optimal()
+        # clf_label = self.train_model_selected_features_label_optimal()
         clf_label = self.load_pickle('selected_features_label_optimized.pkl')
         label_pred = clf_label.predict(x_val_selected_label)
         acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
@@ -151,13 +151,13 @@ class dtc:
         clf = DecisionTreeClassifier(criterion='entropy')
         x_train_selected_attack_cat = self.x_train[SELECTED_FEATURES_ATTACK_CAT_RFE]
         clf_attack_cat = clf.fit(x_train_selected_attack_cat, self.attack_cat_train)
-        self.save_pickle(clf_attack_cat, 'selected_features_attack_optimized.pkl')
+        # self.save_pickle(clf_attack_cat, 'selected_features_attack_optimized.pkl')
         return clf_attack_cat
     
     def optimal_training_selected_features_attack(self):
         start = time.perf_counter()
         x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
-        clf_attack_cat = self.train_model_selected_features_attack_optimal()
+        # clf_attack_cat = self.train_model_selected_features_attack_optimal()
         clf_attack_cat = self.load_pickle('selected_features_attack_optimized.pkl')
         attack_cat_pred = clf_attack_cat.predict(x_val_selected_attack_cat)
         acc_score = metrics.accuracy_score(self.attack_cat_val, attack_cat_pred)*100
