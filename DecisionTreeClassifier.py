@@ -1,7 +1,9 @@
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 from Constants import *
+import time
 import pickle
+import logging
 
 # Temp test running
 import pandas as pd
@@ -10,7 +12,6 @@ from sklearn import preprocessing
 
 class dtc:
     def __init__(self, df: pd.DataFrame, x_train, x_test, x_val, label_train, label_test, label_val, attack_cat_train, attack_cat_test, attack_cat_val):
-        self.df = df
         self.x_train = x_train
         self.x_test = x_test
         self.x_val = x_val
@@ -21,88 +22,165 @@ class dtc:
         self.attack_cat_test = attack_cat_test
         self.attack_cat_val = attack_cat_val
     
+    """
+    Save pickle function will not be utilized after running once with experiments to save the model
+    However, as it may be useful in future iterations, will be left as a relic.
+    """
+    def save_pickle(self, model, filename=''):
+        if filename == '':
+            logging.exception("File name is empty, please insert a filename!")
+        else:
+            with open(filename, 'wb') as file:
+               pickle.dump(model, file)
+
+    """
+    Load pickle function will not be utilized after running once with experiments to check the model file has been properly saved and can be loaded.
+    However, as it may be useful in future iterations, they will be left as a relic.
+    """
+    def load_pickle(self, filename=''):
+        if filename == '':
+            print("Error: Pickle file name is empty, please select a file to load!")
+            pass
+        else:
+            with open(filename, 'rb') as file:
+                loaded_model = pickle.load(file)
+            return loaded_model
+
     # EXPERIMENT PART 1 - RUN CLASSIFIER WITHOUT SELECTED FEATURES
-    def no_selected_features_label(self):
-        print("Calculating Accuracy Score without using Selected Features for Label Prediction....")
-        clf = DecisionTreeClassifier(criterion='entropy')
+    def train_model_no_features_selected_label(self):
+        clf = DecisionTreeClassifier()
         clf_label = clf.fit(self.x_train, self.label_train)
-        # save this into a pickle file
+        # self.save_pickle(clf_label, 'no_selected_features_entropy_dtc_label.pkl')
+        return clf_label
+
+    def no_selected_features_label(self):
+        start = time.perf_counter()
+        print("Calculating Accuracy Score without using Selected Features for Label Prediction....")
+        # clf_label = self.train_model_no_features_selected_label()
+        clf_label = self.load_pickle('no_selected_features_entropy_dtc_label.pkl')
         label_pred = clf_label.predict(self.x_test)
         acc_score = metrics.accuracy_score(self.label_test, label_pred)*100
         print("Label Prediction Accuracy on Decision Tree Classifier with No Selected Features: {:.2f}%\n".format(acc_score))
         print(metrics.classification_report(self.label_test, label_pred))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC without using Selected Features for Label Prediction completed in {end - start:0.4f} seconds\n")
 
-    def no_selected_featues_attack_cat(self):
+    def train_model_no_features_selected_attack_cat(self):
+        clf = DecisionTreeClassifier()
+        clf_attack = clf.fit(self.x_train, self.attack_cat_train)
+        self.save_pickle(clf_attack, 'no_selected_features_entropy_dtc_attack.pkl')
+        return clf_attack
+
+    def no_selected_features_attack_cat(self):
+        start = time.perf_counter()
         print("Calculating Accuracy Score without using Selected Features for Attack Category Prediction....")
-        clf = DecisionTreeClassifier(criterion='entropy')
-        clf_attack_cat = clf.fit(self.x_train, self.attack_cat_train)
-        # save into pickle file
+        # clf_attack_cat = self.train_model_no_features_selected_attack_cat()
+        clf_attack_cat = self.load_pickle('no_selected_features_entropy_dtc_attack.pkl')
         attack_pred = clf_attack_cat.predict(self.x_test)
         acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
         print("Attack Category Prediction Accuracy on Decision Tree Classifier with No Selected Features: {:.2f}%\n".format(acc_score))
         print(metrics.classification_report(self.attack_cat_test, attack_pred, labels=ATTACK_CAT_STR_VALUES))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC without using Selected Features for Attack Category Prediction completed in {end - start:0.4f} seconds\n")
 
     # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH SELECTED FEATURES
-    def selected_features_label(self):
-        print("Calculating Accuracy Score with Selected Features for Label...")
-        clf = DecisionTreeClassifier(criterion='entropy')
+    def train_model_selected_features_label(self):
+        clf = DecisionTreeClassifier()
         x_train_selected_label = self.x_train[SELECTED_FEATURES_LABEL_RFE]
-        x_test_selected_label = self.x_test[SELECTED_FEATURES_LABEL_RFE]
         clf_label = clf.fit(x_train_selected_label, self.label_train)
+        # self.save_pickle(clf_label, 'selected_features_label_unoptimized.pkl')
+        return clf_label
+
+    def selected_features_label(self):
+        start = time.perf_counter()
+        print("Calculating Accuracy Score with Selected Features for Label...")
+        # clf_label = self.train_model_selected_features_label()
+        clf_label = self.load_pickle('selected_features_label_unoptimized.pkl')
+        x_test_selected_label = self.x_test[SELECTED_FEATURES_LABEL_RFE]
         label_pred = clf_label.predict(x_test_selected_label)
         acc_score = metrics.accuracy_score(self.label_test, label_pred)*100
-        print("Label Prediction Accuracy of RFE Selected Features: {:.2f}%".format(acc_score))
+        print("Label Prediction Accuracy of RFE Selected Features: {:.2f}%\n".format(acc_score))
         print(metrics.classification_report(self.label_test, label_pred))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC using Selected Features for Label Prediction completed in {end - start:0.4f} seconds\n")
+
+    def train_model_selected_features_attack(self):
+        clf = DecisionTreeClassifier()
+        x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        clf_attack = clf.fit(x_train_selected_attack, self.attack_cat_train)
+        # self.save_pickle(clf_attack, 'selected_features_attack_unoptimized.pkl')
+        return clf_attack
 
     def selected_features_attack(self):
+        start = time.perf_counter()
         print("Calculating Accuracy Score with Selected Features for Attack Category...")
-        # print("================ RFE SELECTED FEATURES ===============")
-        clf = DecisionTreeClassifier(criterion='entropy')
-        x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_RFE]
         x_test_selected_attack = self.x_test[SELECTED_FEATURES_ATTACK_CAT_RFE]
-        clf_attack = clf.fit(x_train_selected_attack, self.attack_cat_train)
+        # clf_attack = self.train_model_selected_features_attack()
+        clf_attack = self.load_pickle('selected_features_attack_unoptimized.pkl')
         attack_pred = clf_attack.predict(x_test_selected_attack)
         acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
-        print("Attack Category Prediction Accuracy of RFE Selected Features: {:.2f}%".format(acc_score))
+        print("Attack Category Prediction Accuracy of RFE Selected Features: {:.2f}%\n".format(acc_score))
         print(metrics.classification_report(self.attack_cat_test, attack_pred, labels=ATTACK_CAT_STR_VALUES))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC using Selected Features for Attack Category Prediction completed in {end - start:0.4f} seconds\n")
 
     # PART 2 - Optimized the training and classifier so that best possible scores are retrieved for Labels
-    def optimal_training_selected_features_label(self):
+    def train_model_selected_features_label_optimal(self):
         clf = DecisionTreeClassifier(criterion='entropy', max_depth = 9)
         x_train_selected_label = self.x_train[SELECTED_FEATURES_LABEL_RFE]
-        x_val_selected_label = self.x_val[SELECTED_FEATURES_LABEL_RFE]
         clf_label = clf.fit(x_train_selected_label, self.label_train)
+        # self.save_pickle(clf_label, 'selected_features_label_optimized.pkl')
+        return clf_label
+    
+    def optimal_training_selected_features_label(self):
+        start = time.perf_counter()
+        x_val_selected_label = self.x_val[SELECTED_FEATURES_LABEL_RFE]
+        clf_label = self.train_model_selected_features_label_optimal()
+        clf_label = self.load_pickle('selected_features_label_optimized.pkl')
         label_pred = clf_label.predict(x_val_selected_label)
+        acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
+        print("Label Prediction Accuracy of RFE Selected Features Optimal: {:.2f}%\n".format(acc_score))
         classifier_name = "Decision Tree Classifier"
         print("\nClassifier: {}\n".format(classifier_name))
         print(metrics.classification_report(self.label_val, label_pred))
+        end = time.perf_counter()
+        print(f"Running DTC using Selected Features for Label Prediction with Hyper Parameter Adjustment completed in {end - start:0.4f} seconds\n")
 
     # PART 3 - Optimized the training and classifier so that best possible scores are retrieved for Attack Category
-    def optimal_training_selected_features_attack(self):
-        # print("================ RFE SELECTED FEATURES ===============")
-        clf = DecisionTreeClassifier(criterion='entropy', max_depth = 16)
+    def train_model_selected_features_attack_optimal(self):
+        clf = DecisionTreeClassifier(criterion='entropy')
         x_train_selected_attack_cat = self.x_train[SELECTED_FEATURES_ATTACK_CAT_RFE]
-        x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
         clf_attack_cat = clf.fit(x_train_selected_attack_cat, self.attack_cat_train)
+        self.save_pickle(clf_attack_cat, 'selected_features_attack_optimized.pkl')
+        return clf_attack_cat
+    
+    def optimal_training_selected_features_attack(self):
+        start = time.perf_counter()
+        x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        clf_attack_cat = self.train_model_selected_features_attack_optimal()
+        clf_attack_cat = self.load_pickle('selected_features_attack_optimized.pkl')
         attack_cat_pred = clf_attack_cat.predict(x_val_selected_attack_cat)
+        acc_score = metrics.accuracy_score(self.attack_cat_val, attack_cat_pred)*100
+        print("Attack Category Prediction Accuracy of RFE Selected Features Optimal: {:.2f}%\n".format(acc_score))
         classifier_name = "Decision Tree Classifier"
         print("\nClassifier: {}\n".format(classifier_name))
         print(metrics.classification_report(self.attack_cat_val, attack_cat_pred, labels=ATTACK_CAT_STR_VALUES))
+        end = time.perf_counter()
+        print(f"Running DTC using Selected Features for Attack Category Prediction with Hyper Parameter Adjustment completed in {end - start:0.4f} seconds\n")
 
-    def get_experiment_data_part_one(self):
+    def get_experiment_data_part_one_dtc(self):
         print("============= PART ONE EXPERIMENTS =============")
         self.no_selected_features_label()
-        self.no_selected_featues_attack_cat()
+        self.no_selected_features_attack_cat()
         self.selected_features_label()
         self.selected_features_attack()
-        print("============= END OF PART ONE EXPERIMENTS =============")
-
+        print("============= END OF PART ONE EXPERIMENTS =============\n")
 
 if __name__ == '__main__':
     df = pd.read_csv("UNSW-NB15-BALANCED-TRAIN.csv", skipinitialspace=True)
     df = df.replace(r'\s+', '', regex=True)
     df.fillna("None", inplace=True)
-    # df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
+    df.replace({'attack_cat': {'Backdoor':'Backdoors'}}, inplace=True)
 
     df['ct_flw_http_mthd'] = df['ct_flw_http_mthd'].astype('str')
     df['is_ftp_login'] = df['is_ftp_login'].astype('str')
@@ -137,6 +215,6 @@ if __name__ == '__main__':
         label_train=label_train, label_test=label_test, label_val=label_val,
         attack_cat_train=attack_cat_train, attack_cat_test=attack_cat_test, attack_cat_val=attack_cat_val)
     
-    DTC.get_experiment_data_part_one()
+    DTC.get_experiment_data_part_one_dtc()
     DTC.optimal_training_selected_features_label()
     DTC.optimal_training_selected_features_attack()
