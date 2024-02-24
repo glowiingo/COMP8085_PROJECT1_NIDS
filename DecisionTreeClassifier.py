@@ -28,7 +28,7 @@ class dtc:
     """
     def save_pickle(self, model, filename=''):
         if filename == '':
-            logging.exception("File name is empty, please insert a filename!")
+            logging.exception("Error: File name is empty, please insert a filename!")
         else:
             with open(filename, 'wb') as file:
                pickle.dump(model, file)
@@ -39,7 +39,7 @@ class dtc:
     """
     def load_pickle(self, filename=''):
         if filename == '':
-            print("Error: Pickle file name is empty, please select a file to load!")
+            logging.exception("Error: Pickle file name is empty, please select a file to load!")
             pass
         else:
             with open(filename, 'rb') as file:
@@ -58,10 +58,10 @@ class dtc:
         print("Calculating Accuracy Score without using Selected Features for Label Prediction....")
         # clf_label = self.train_model_no_features_selected_label()
         clf_label = self.load_pickle('no_selected_features_entropy_dtc_label.pkl')
-        label_pred = clf_label.predict(self.x_test)
-        acc_score = metrics.accuracy_score(self.label_test, label_pred)*100
+        label_pred = clf_label.predict(self.x_val)
+        acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
         print("Label Prediction Accuracy on Decision Tree Classifier with No Selected Features: {:.2f}%\n".format(acc_score))
-        print(metrics.classification_report(self.label_test, label_pred))
+        print(metrics.classification_report(self.label_val, label_pred))
         end = time.perf_counter()
         print(f"Experiment on running DTC without using Selected Features for Label Prediction completed in {end - start:0.4f} seconds\n")
 
@@ -76,14 +76,14 @@ class dtc:
         print("Calculating Accuracy Score without using Selected Features for Attack Category Prediction....")
         # clf_attack_cat = self.train_model_no_features_selected_attack_cat()
         clf_attack_cat = self.load_pickle('no_selected_features_entropy_dtc_attack.pkl')
-        attack_pred = clf_attack_cat.predict(self.x_test)
-        acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
+        attack_pred = clf_attack_cat.predict(self.x_val)
+        acc_score = metrics.accuracy_score(self.attack_cat_val, attack_pred)*100
         print("Attack Category Prediction Accuracy on Decision Tree Classifier with No Selected Features: {:.2f}%\n".format(acc_score))
-        print(metrics.classification_report(self.attack_cat_test, attack_pred, labels=ATTACK_CAT_STR_VALUES))
+        print(metrics.classification_report(self.attack_cat_val, attack_pred, labels=ATTACK_CAT_STR_VALUES))
         end = time.perf_counter()
         print(f"Experiment on running DTC without using Selected Features for Attack Category Prediction completed in {end - start:0.4f} seconds\n")
 
-    # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH SELECTED FEATURES
+    # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH RFE SELECTED FEATURES
     def train_model_selected_features_label(self):
         clf = DecisionTreeClassifier()
         x_train_selected_label = self.x_train[SELECTED_FEATURES_LABEL_RFE]
@@ -96,11 +96,11 @@ class dtc:
         print("Calculating Accuracy Score with Selected Features for Label...")
         # clf_label = self.train_model_selected_features_label()
         clf_label = self.load_pickle('selected_features_label_unoptimized.pkl')
-        x_test_selected_label = self.x_test[SELECTED_FEATURES_LABEL_RFE]
-        label_pred = clf_label.predict(x_test_selected_label)
-        acc_score = metrics.accuracy_score(self.label_test, label_pred)*100
+        x_val_selected_label = self.x_val[SELECTED_FEATURES_LABEL_RFE]
+        label_pred = clf_label.predict(x_val_selected_label)
+        acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
         print("Label Prediction Accuracy of RFE Selected Features: {:.2f}%\n".format(acc_score))
-        print(metrics.classification_report(self.label_test, label_pred))
+        print(metrics.classification_report(self.label_val, label_pred))
         end = time.perf_counter()
         print(f"Experiment on running DTC using Selected Features for Label Prediction completed in {end - start:0.4f} seconds\n")
 
@@ -114,15 +114,96 @@ class dtc:
     def selected_features_attack(self):
         start = time.perf_counter()
         print("Calculating Accuracy Score with Selected Features for Attack Category...")
-        x_test_selected_attack = self.x_test[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        x_val_selected_attack = self.x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
         # clf_attack = self.train_model_selected_features_attack()
         clf_attack = self.load_pickle('selected_features_attack_unoptimized.pkl')
-        attack_pred = clf_attack.predict(x_test_selected_attack)
-        acc_score = metrics.accuracy_score(self.attack_cat_test, attack_pred)*100
+        attack_pred = clf_attack.predict(x_val_selected_attack)
+        acc_score = metrics.accuracy_score(self.attack_cat_val, attack_pred)*100
         print("Attack Category Prediction Accuracy of RFE Selected Features: {:.2f}%\n".format(acc_score))
-        print(metrics.classification_report(self.attack_cat_test, attack_pred, labels=ATTACK_CAT_STR_VALUES))
+        print(metrics.classification_report(self.attack_cat_val, attack_pred, labels=ATTACK_CAT_STR_VALUES))
         end = time.perf_counter()
         print(f"Experiment on running DTC using Selected Features for Attack Category Prediction completed in {end - start:0.4f} seconds\n")
+
+    # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH EBFI SELECTED FEATURES
+    def train_model_selected_features_label_ebfi(self):
+        clf = DecisionTreeClassifier()
+        x_train_selected_label = self.x_train[SELECTED_FEATURES_LABEL_EBFI]
+        clf_label = clf.fit(x_train_selected_label, self.label_train)
+        # self.save_pickle(clf_label, 'selected_features_label_unoptimized_ebfi.pkl')
+        return clf_label
+
+    def selected_features_label_ebfi(self):
+        start = time.perf_counter()
+        print("Calculating Accuracy Score with EBFI Selected Features for Label...")
+        # clf_label = self.train_model_selected_features_label_ebfi()
+        clf_label = self.load_pickle('selected_features_label_unoptimized_ebfi.pkl')
+        x_val_selected_label = self.x_val[SELECTED_FEATURES_LABEL_EBFI]
+        label_pred = clf_label.predict(x_val_selected_label)
+        acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
+        print("Label Prediction Accuracy of EBFI Selected Features: {:.2f}%\n".format(acc_score))
+        print(metrics.classification_report(self.label_val, label_pred))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC using Selected Features from EBFI for Label Prediction completed in {end - start:0.4f} seconds\n")
+
+    def train_model_selected_features_attack_ebfi(self):
+        clf = DecisionTreeClassifier()
+        x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_EBFI]
+        clf_attack = clf.fit(x_train_selected_attack, self.attack_cat_train)
+        # self.save_pickle(clf_attack, 'selected_features_attack_unoptimized_ebfi.pkl')
+        return clf_attack
+
+    def selected_features_attack_ebfi(self):
+        start = time.perf_counter()
+        print("Calculating Accuracy Score with EBFI Selected Features for Attack Category...")
+        x_val_selected_attack = self.x_val[SELECTED_FEATURES_ATTACK_CAT_EBFI]
+        # clf_attack = self.train_model_selected_features_attack_ebfi()
+        clf_attack = self.load_pickle('selected_features_attack_unoptimized_ebfi.pkl')
+        attack_pred = clf_attack.predict(x_val_selected_attack)
+        acc_score = metrics.accuracy_score(self.attack_cat_val, attack_pred)*100
+        print("Attack Category Prediction Accuracy of EBFI Selected Features: {:.2f}%\n".format(acc_score))
+        print(metrics.classification_report(self.attack_cat_val, attack_pred, labels=ATTACK_CAT_STR_VALUES))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC using Selected Features for Attack Category Prediction completed in {end - start:0.4f} seconds\n")
+    # EXPERIMENT PART 1 - RUN CLASSIFIER WTIH PCA SELECTED FEATURES
+    def train_model_selected_features_label_pca(self):
+        clf = DecisionTreeClassifier()
+        x_train_selected_label = self.x_train[SELECTED_FEATURES_ATTACK_CAT_PCA]
+        clf_label = clf.fit(x_train_selected_label, self.label_train)
+        # self.save_pickle(clf_label, 'selected_features_label_unoptimized_pca.pkl')
+        return clf_label
+
+    def selected_features_label_pca(self):
+        start = time.perf_counter()
+        print("Calculating Accuracy Score with PCA Selected Features for Label...")
+        # clf_label = self.train_model_selected_features_label_pca()
+        clf_label = self.load_pickle('selected_features_label_unoptimized_pca.pkl')
+        x_val_selected_label = self.x_val[SELECTED_FEATURES_ATTACK_CAT_PCA]
+        label_pred = clf_label.predict(x_val_selected_label)
+        acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
+        print("Label Prediction Accuracy of PCA Selected Features: {:.2f}%\n".format(acc_score))
+        print(metrics.classification_report(self.label_val, label_pred))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC using Selected Features from PCA for Label Prediction completed in {end - start:0.4f} seconds\n")
+
+    def train_model_selected_features_attack_pca(self):
+        clf = DecisionTreeClassifier()
+        x_train_selected_attack = self.x_train[SELECTED_FEATURES_ATTACK_CAT_PCA]
+        clf_attack = clf.fit(x_train_selected_attack, self.attack_cat_train)
+        # self.save_pickle(clf_attack, 'selected_features_attack_unoptimized_pca.pkl')
+        return clf_attack
+
+    def selected_features_attack_pca(self):
+        start = time.perf_counter()
+        print("Calculating Accuracy Score with EBFI Selected Features for Attack Category...")
+        x_val_selected_attack = self.x_val[SELECTED_FEATURES_ATTACK_CAT_PCA]
+        # clf_attack = self.train_model_selected_features_attack_pca()
+        clf_attack = self.load_pickle('selected_features_attack_unoptimized_pca.pkl')
+        attack_pred = clf_attack.predict(x_val_selected_attack)
+        acc_score = metrics.accuracy_score(self.attack_cat_val, attack_pred)*100
+        print("Attack Category Prediction Accuracy of EBFI Selected Features: {:.2f}%\n".format(acc_score))
+        print(metrics.classification_report(self.attack_cat_val, attack_pred, labels=ATTACK_CAT_STR_VALUES))
+        end = time.perf_counter()
+        print(f"Experiment on running DTC using Selected Features from PCA for Attack Category Prediction completed in {end - start:0.4f} seconds\n")
 
     # PART 2 - Optimized the training and classifier so that best possible scores are retrieved for Labels
     def train_model_selected_features_label_optimal(self):
@@ -134,15 +215,15 @@ class dtc:
     
     def optimal_training_selected_features_label(self):
         start = time.perf_counter()
-        x_val_selected_label = self.x_val[SELECTED_FEATURES_LABEL_RFE]
+        x_test_selected_label = self.x_test[SELECTED_FEATURES_LABEL_RFE]
         # clf_label = self.train_model_selected_features_label_optimal()
         clf_label = self.load_pickle('selected_features_label_optimized.pkl')
-        label_pred = clf_label.predict(x_val_selected_label)
-        acc_score = metrics.accuracy_score(self.label_val, label_pred)*100
+        label_pred = clf_label.predict(x_test_selected_label)
+        acc_score = metrics.accuracy_score(self.label_test, label_pred)*100
         print("Label Prediction Accuracy of RFE Selected Features Optimal: {:.2f}%\n".format(acc_score))
         classifier_name = "Decision Tree Classifier"
         print("\nClassifier: {}\n".format(classifier_name))
-        print(metrics.classification_report(self.label_val, label_pred))
+        print(metrics.classification_report(self.label_test, label_pred))
         end = time.perf_counter()
         print(f"Running DTC using Selected Features for Label Prediction with Hyper Parameter Adjustment completed in {end - start:0.4f} seconds\n")
 
@@ -156,15 +237,15 @@ class dtc:
     
     def optimal_training_selected_features_attack(self):
         start = time.perf_counter()
-        x_val_selected_attack_cat = self.x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        x_test_selected_attack_cat = self.x_test[SELECTED_FEATURES_ATTACK_CAT_RFE]
         # clf_attack_cat = self.train_model_selected_features_attack_optimal()
         clf_attack_cat = self.load_pickle('selected_features_attack_optimized.pkl')
-        attack_cat_pred = clf_attack_cat.predict(x_val_selected_attack_cat)
-        acc_score = metrics.accuracy_score(self.attack_cat_val, attack_cat_pred)*100
+        attack_cat_pred = clf_attack_cat.predict(x_test_selected_attack_cat)
+        acc_score = metrics.accuracy_score(self.attack_cat_test, attack_cat_pred)*100
         print("Attack Category Prediction Accuracy of RFE Selected Features Optimal: {:.2f}%\n".format(acc_score))
         classifier_name = "Decision Tree Classifier"
         print("\nClassifier: {}\n".format(classifier_name))
-        print(metrics.classification_report(self.attack_cat_val, attack_cat_pred, labels=ATTACK_CAT_STR_VALUES))
+        print(metrics.classification_report(self.attack_cat_test, attack_cat_pred, labels=ATTACK_CAT_STR_VALUES))
         end = time.perf_counter()
         print(f"Running DTC using Selected Features for Attack Category Prediction with Hyper Parameter Adjustment completed in {end - start:0.4f} seconds\n")
 
@@ -174,6 +255,12 @@ class dtc:
         self.no_selected_features_attack_cat()
         self.selected_features_label()
         self.selected_features_attack()
+        print("============ EBFI SELECTED FEATURES EXPERIMENT ============")
+        self.selected_features_label_ebfi()
+        self.selected_features_attack_ebfi()
+        print("============ PCA SELECTED FEATURES EXPERIMENT ============")
+        self.selected_features_label_pca()
+        self.selected_features_attack_pca()
         print("============= END OF PART ONE EXPERIMENTS =============\n")
 
 if __name__ == '__main__':
