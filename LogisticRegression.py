@@ -148,6 +148,5 @@ if __name__ == '__main__':
 
   lr = LogisticRegressionClassifier(x_train, x_val, x_test, label_train, label_val, label_test, attack_train, attack_val, attack_test)
 
-  attack_data1 = lr.pickle_load_attack()
-  attack_data2 = lr.get_trained_attack()
-  lr.print_attack_report(attack_data1)
+  data1 = lr.pickle_load_label()
+  lr.print_label_report(data1)
