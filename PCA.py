@@ -3,11 +3,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import precision_score
-import matplotlib.pyplot as plt
-import numpy as np
 import os
-
 
 # load data
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -88,23 +84,3 @@ print(score_names)
 # Attack Cat
 # 0.9178740023269774
 # ['ct_dst_src_ltm', 'ct_dst_sport_ltm', 'ct_srv_dst', 'ct_src_dport_ltm', 'ct_srv_src', 'dwin', 'swin', 'ct_dst_ltm', 'ct_src_ ltm', 'ct_state_ttl', 'sttl', 'state', 'service', 'sport', 'stcpb', 'dtcpb', 'dmeansz', 'is_ftp_login', 'Stime', 'Ltime', 'ct_ftp_cmd', 'dttl', 'Dload', 'srcip', 'Sload', 'dsport']
-"""
-# Scree Plot Code From https://www.jcchouinard.com/pca-scree-plot/
-plt.bar(
-    range(1,len(pca.explained_variance_)+1),
-    pca.explained_variance_
-    )
- 
-plt.plot(
-    range(1,len(pca.explained_variance_ )+1),
-    np.cumsum(pca.explained_variance_),
-    c='red',
-    label='Cumulative Explained Variance')
- 
-plt.legend(loc='center right')
-plt.xlabel('Number of components')
-plt.ylabel('Explained variance (eignenvalues)')
-plt.title('Scree plot')
- 
-plt.show()
-"""
