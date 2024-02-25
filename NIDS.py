@@ -10,6 +10,7 @@ import pickle
 import os.path
 import pandas as pd
 from sklearn import metrics
+import DecisionTreeClassifier as dtc
 
 ## Variables
 knn_name = 'K Nearest Neighbors'
@@ -134,13 +135,13 @@ if option_file_ext != pkl_ext:
                         classifier_model = KNN.get_attack_cat_model()
 
         elif classifier == dtc_arg:
-                #DTC 
+                DTC = dtc.dtc(x_train=X_train, x_test=X_test, x_val=X_val, 
+                              label_train=y_label_train, label_test=y_label_test, label_val=y_label_val, 
+                              attack_cat_train=y_attack_cat_train, attack_cat_test=y_attack_cat_test, attack_cat_val=y_attack_cat_val)
                 if task == label_task:
-                        print('DTC.train_label_model(X_train, y_label_train)')
-                        print('classifier_model = DTC.get_label_model')
+                        classifier = DTC.train_model_selected_features_label_optimal()
                 elif task == attack_cat_task:
-                        print('DTC.train_label_model(X_train, y_attack_cat_train)')
-                        print('classifier_model = DTC.get_attack_cat_model')
+                        classifier = DTC.train_model_selected_features_attack_optimal()
         elif classifier == lrc_arg:
                 #LRC
                 if task == 'label':
@@ -165,19 +166,16 @@ else :
 
 
         if classifier == knn_arg:
-                KNN = knn.knn()
                 if task == label_task:
                         classifier_model = knn_label
                 elif task == attack_cat_task:
                         classifier_model = knn_attack_cat
         elif classifier == dtc_arg:
-                #DTC 
                 if task == label_task:
                         classifier_model = dtc_label
                 elif task == attack_cat_task:
                         classifier_model = dtc_attack_cat
         elif classifier == lrc_arg:
-                #LRC
                 if task == label_task:                        
                         classifier_model = lrc_label
                 elif task == attack_cat_task:                        

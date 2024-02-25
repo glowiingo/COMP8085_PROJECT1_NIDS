@@ -1,0 +1,188 @@
+% The contents of this file is taken from https://neurips.cc/Conferences/2022/PaperInformation/StyleFiles
+
+\documentclass{article}
+\usepackage[final]{neurips_2022}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+
+\title{COMP 8085 - Project \# - Group \# Report}
+
+\author{%
+  Member Number1\\
+  School of Computing and Academic studies\\
+  British Columbia Institute of Technology\\
+  Burnaby, British Columbia, Canada\\
+  \texttt{member1@bcit.ca} \\
+  
+  \And
+  Member Number2\\
+  School of Computing and Academic studies\\
+  British Columbia Institute of Technology\\
+  Burnaby, British Columbia, Canada\\
+  \texttt{member2@bcit.ca} \\
+
+  \And 
+  Member Number3\\
+  School of Computing and Academic studies\\
+  British Columbia Institute of Technology\\
+  Burnaby, British Columbia, Canada\\
+  \texttt{member3@bcit.ca}
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+  In here, briefly explain the task you are trying to accomplish and touch upon the results you have achieved. Do not put analysis in here unless there is something really important. The content of this part should have 200 or less words.
+\end{abstract}
+
+
+\section{Task Definition}\label{sec:definition}
+In here, you aim to explain the task using your own understanding. This part may have subsections such as \texttt{Problem Statement}, \texttt{Scope}, \texttt{Evaluation Metrics}, and \texttt{Dataset}.
+The intent of this section is to show that you have understood the task, since that would be the most important starting point. Do not put anything related to your solution, implemented source code, results and analysis in here. As a rule of thumb this part needs to expand for at least half a page.
+
+\subsection{Notes}
+Here are some important notes to consider in this section:
+    \begin{itemize}
+        \item[-] Make sure your evaluation metrics produce numeric scores so we can compare different models using those. If you are not using a standard metric, provide the \textit{maximum} and \textit{minimum} possible values for the metric.
+        
+        \item[-] Provide proper statistics about the dataset in the \texttt{Dataset} section. It is quite important that you know how many total training records are there in each of training/dev/test sets, what is the size of each image, how many words in total are there in the dataset and such.
+    \end{itemize}
+
+
+\section{Infrastructure}\label{sec:infrastructure}
+In this section you need to provide the details about the hardware used to train the model. The GPU model and memory capacity (if you train a neural network in your project), the required main memory to run your code as well as any modules, packages and frameworks used and required for running your models will go in here. You may also provide the commands to install the requirements, and run your code in either train or inference modes in here.
+
+\section{Approach}\label{sec:approach}
+In this section, you need to single out your solution to the problem and explain it part by part.
+If your project contains providing a new model you will need to introduce a \textbf{baseline} model (which would be the model which your proposed solution would beat it in performance), and an \textbf{oracle} model (which your model would not necessarily achieve as good results as the oracle but the oracle performance will show you how much better your model could get).
+
+If you are submitting a project (or a part of your project) that uses pre-implemented/pre-trained models (specially deep models) you need to provide a section in here that describes the model architecture. Simply mentioning that we use this certain model does not suffice and you will not get the grades for that part. Also \textbf{do not copy and paste source code from the tutorials, and just run it}. I will need to see you have understood the code to consider the grade for it and it is on you to show me you have understood it!
+
+Make sure you cite the models that are not your original work and explain how those works relate to your implementation in Section \ref{sec:lit_rev}.
+
+\section{Literature Review}\label{sec:lit_rev}
+To find a solution for this project, you should have studied what others have done. You need to provide a summary of what others have done in this section. Make sure you cite those works properly and add their titles to the References section, replacing the place holder citations I have put in this file.
+
+
+\section{Experiments and Analysis}\label{sec:exp_and_analysis}
+In this section, you need to provide experimental results using the models and procedures you explained in Section \ref{sec:approach}. If I have provided the experiments in the project description, then you need to explain how you have implemented the experiments, and provide your analysis of the experimental results.
+
+Otherwise, you need to define the experiments yourselves. Each group member must define three different experiments. One can define experiments with the structure: ``\textit{What would happen if ...}''. For example in digit recognition one experiment could be: ``\textit{what would happen if I write the digit 7 on the paper 10 times, take the picture of each digit and feed it to my model? will I get a good accuracy?}''. Your experiments \textbf{cannot be of the same type}, i.e. if you write the digit 8 on the paper 10 times and re-do the previous example, that would not be a valid second type of experiment. As well, the report cannot report experiments from the same type for different group members (we plan to examine the models from as many different aspects as possible).
+
+When reporting the experimental results, make sure you report the \textbf{total time} the experiment took to run, the required hardware to run it, as well as important stats about the data that is being examined in this experiment (for example if you are feeding in a new test set or cases like that).
+
+For each experiment, you need to provide analysis and takeaways from the results you have acquired. Be curious and try poking around and discovering more in here! the purpose of this exercise is to learn to discover new information about the implemented models and get ideas to elevate your design to the next level.
+
+\section{Contributions}
+In this section, you need to provide the contributions of each group member. You need to provide \textbf{at least two sentences} per group member. As well, I need you to provide a contribution percentage for each group member. For example if group member 1 has done twice more work than the other two members you would put, member1 (50\%), member2 (25\%) and member3 (25\%) for contribution percentage values. I reserve the right to modify the final group project grade based on the contributions of the group members.\\
+Important note, each group member \textbf{must} contribute in some part of the code development. Simply writing the report does not count as a valid contribution to receive the project grade.
+
+
+\subsection{Obstacles and Roadblocks}
+In here, you may talk about the problems that you had doing the project as well as the parts that you possibly have not had done with explanations on why you could not get that part done.
+
+\section*{Write-Up Requirements}
+\textbf{This section will not show up in your final report!}\\
+Please read the instructions below carefully and follow them faithfully.
+    \begin{itemize}
+        \item[-] Do not change the accompanying \texttt{.sty} file as well as the font, size and format of this \texttt{.tex} file.
+        \item[-] Make sure the main content in your report takes \textbf{at most 8 pages}. The more information, and extra graphs and tables (if you have any) should go into the Appendix (you may refer to it like this: Appendix \ref{sec:appendix}).
+        \item[-] Make sure your report is filled in exactly this template file.
+        \item[-] If reporting a graph, use captions for it and refer to the graph in the main write up explaining about it. Simply throwing in a bunch of graphs does not prove anything about your experiments.
+        \item[-] If you are doing grid search on some parameters, use a table to present the results instead of natural language and bullet points (e.g. explaining ``accuracy is increasing from ... to ...'')
+        \item[-] Do not resize the images to make them bigger, this will make the images blurry and harder to read. Keep them in the original more readable format.
+        \item[-] I cannot emphasize this enough, \textbf{do not forget grammar and spelling error checking before submission}.
+        \item[-] The correct way of explaining about the implementation would be to refer me to a block of code in the source code files and explain what the piece of code does in plain English. \textbf{Do not copy and paste source code anywhere in the report}.
+        \begin{itemize}
+            \item Some reports spend a \textit{few pages} on code implementation explanation. \textbf{Do not do this either}. The purpose of the report is to reflect your analysis, if you need to explain 2 pages about different source code files, do it in the appendix.
+            \item I do not need to know that your class `\texttt{ABCD.py}' inherits from `\texttt{torch.nn.module}'. Your explanation about the source code can be a maximum of two paragraphs (if necessary). Try to explain what your model is doing without having to rely on the classes and functions.
+        \end{itemize}
+    \end{itemize}
+
+\section*{Submission Requirements}
+    \textbf{This section will not show up in your final report!}\\
+    \begin{itemize}
+        \item[-] Submit this PDF report separately. \textbf{Do not} zip it along with the source code and model files. It takes a lot more time from me to provide feedback on details of the write-up if I have to copy/paste your text from the PDF into the D2L grading box.
+
+        \item[-] If you have generated a dataset that is used in your experiments, upload it somewhere and provide the download link to it in the report. Make sure your validation/test data are not in the same zip file as your training data.
+
+        \item[-] Make sure your code does not rely on Windows to run since I will test it on Linux.
+
+        \item[-] Pickle your trained models and submit them along with the code (in a separate zip file). Provide a fast way of running your code in inference mode (without the training part) as I will not have time to train every single one of your models. The training code must also be there but it should not run automatically when I run your submission. I will randomly select a few of the source codes and run their training part as well.
+    \end{itemize}
+
+
+\section*{References}
+For any reference, you can simply search the paper title in https://scholar.google.com/ or https://www.semanticscholar.org/. Click \texttt{Cite} and copy the \texttt{APA} version down here and assign a number to it. As an example, you can cite the third paper using \textit{Moustafa et al.\ [3]}.
+
+Note that the Reference section does not count towards the page limit.
+\medskip
+
+
+{
+\small
+
+
+[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
+connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
+(eds.), {\it Advances in Neural Information Processing Systems 7},
+pp.\ 609--616. Cambridge, MA: MIT Press.
+
+
+[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
+  Realistic Neural Models with the GEneral NEural SImulation System.}  New York:
+TELOS/Springer--Verlag.
+
+
+[3] Moustafa, N., \& Slay, J. (2015, November). UNSW-NB15: a comprehensive data set for network intrusion detection systems (UNSW-NB15 network data set). In 2015 military communications and information systems conference (MilCIS) (pp. 1-6). IEEE.
+
+
+
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Grading Rubrics}
+This part is also necessary for your evaluation. In addition to me who will be grading your submission, you yourselves will also be grading your submission. In each project description, I will provide all the points that I will be grading upon receiving your submission. 
+Put the rubric points in this section and change the default \answerTODO{} to \answerYes{},
+\answerNo{}, \answerGrade{}, or \answerNA{} for each of them. Also include a {\bf
+justification to your answer}, either by referencing the appropriate section of
+your paper or providing a brief inline description.
+
+For example:
+\begin{itemize}
+  \item Did you provide three experiments per group member? \answerYes{See Section~\ref{sec:exp_and_analysis}.}
+  \item Did you provide three experiments per group member? \answerNo{Since the instructor had provided only one experiment, but we carried that one out.}
+  \item Did you provide three experiments per group member (grade out of 4)? \answerGrade{3/4. We believe that we have fulfilled all the requirements for this criteria, except that every body has done one less experiment.}
+  \item Did you provide three experiments per group member? \answerNA{Instructor had waived this requirement for our group.}
+\end{itemize}
+Please do not modify the questions and only use the provided macros for your
+answers.  Note that this section does not count towards the page
+limit.  In your report, please delete this instructions block and only keep the
+section heading above while answering the questions inside the \texttt{rubrics.tex} file that you download and put besides this tex file.
+
+\input{rubrics}
+
+\appendix
+
+
+\section{Appendix}\label{sec:appendix}
+Optionally include extra information (complete proofs, additional experiments, tables and plots) in the appendix.
+
+\end{document}
