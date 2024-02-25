@@ -3,6 +3,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+import time
 import os
 
 # load data
@@ -25,7 +26,7 @@ df["sport"] = pd.to_numeric(df["sport"], errors="coerce")
 df["dsport"] = pd.to_numeric(df["dsport"], errors="coerce")
 df[feature_names] = df[feature_names].apply(lambda x: pd.factorize(x)[0])
 
-x_train, x_test, y_train, y_test = train_test_split(df, y_label, test_size=0.3, random_state=1)
+x_train, x_test, y_train, y_test = train_test_split(df, y_attack, test_size=0.3, random_state=1)
 
 # standardize data
 scalar = StandardScaler()
@@ -34,6 +35,7 @@ x_train_scalar = scalar.transform(x_train)
 x_test_scalar = scalar.transform(x_test)
 
 # analyze data with PCA and LogisticRegression
+start = time.perf_counter()
 pca = PCA()
 fit = pca.fit(x_train_scalar) 
 
@@ -42,7 +44,6 @@ loadings = pd.DataFrame(abs(pca.components_), columns=df.columns).to_dict(orient
 # print explained variance
 # print("Explained Variance: %s" % fit.explained_variance_ratio_)
 
-# analyze data
 feature_set = set()
 score = 0
 score_names = []
@@ -74,13 +75,19 @@ for i in range(len(fit.explained_variance_ratio_)):
     score = logRegr.score(x_test_trans, y_test)
     score_names = names 
 
+end = time.perf_counter()
+exp_time = end - start
+
+print(exp_time)
 print(score)
 print(score_names)
 
 # Label
+# 43.70877190004103 seconds
 # 0.9920037943070573
 # ['state', 'ct_dst_sport_ltm', 'sttl', 'dttl', 'dwin', 'swin', 'is_sm_ips_ports', 'Sintpkt', 'ct_state_ttl', 'ct_src_ ltm', 'Sload']
 #
 # Attack Cat
+# 887.9623371999478 seconds
 # 0.9178740023269774
 # ['ct_dst_src_ltm', 'ct_dst_sport_ltm', 'ct_srv_dst', 'ct_src_dport_ltm', 'ct_srv_src', 'dwin', 'swin', 'ct_dst_ltm', 'ct_src_ ltm', 'ct_state_ttl', 'sttl', 'state', 'service', 'sport', 'stcpb', 'dtcpb', 'dmeansz', 'is_ftp_login', 'Stime', 'Ltime', 'ct_ftp_cmd', 'dttl', 'Dload', 'srcip', 'Sload', 'dsport']

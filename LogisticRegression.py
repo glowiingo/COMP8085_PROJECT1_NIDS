@@ -66,6 +66,7 @@ class LogisticRegressionClassifier:
       predictions = logRegr.predict(x_scaled_val) 
       score = f1_score(y_val, predictions, average="macro")
       time_taken = time.time() - start_time
+      
       if (score > data["score"] or score == data["score"] and time_taken < data["time"]):
         data["score"] = score
         data["solver"] = solver
