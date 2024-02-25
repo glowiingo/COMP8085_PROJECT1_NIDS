@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 
 class dtc:
-    def __init__(self, df: pd.DataFrame, x_train, x_test, x_val, label_train, label_test, label_val, attack_cat_train, attack_cat_test, attack_cat_val):
+    def __init__(self, x_train, x_test, x_val, label_train, label_test, label_val, attack_cat_train, attack_cat_test, attack_cat_val):
         self.x_train = x_train
         self.x_test = x_test
         self.x_val = x_val
