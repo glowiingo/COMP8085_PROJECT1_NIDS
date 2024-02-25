@@ -154,12 +154,16 @@ else :
         file = open(option_file_name, 'rb')
         knn_label = pickle.load(file)
         knn_attack_cat = pickle.load(file)
-        dtc_label = pickle.load(file)
-        dtc_attack_cat = pickle.load(file)
+        #dtc_label = pickle.load(file)
+        #dtc_attack_cat = pickle.load(file)
         lrc_label = pickle.load(file)
         lrc_attack_cat = pickle.load(file)
         file.close()       
         
+        dtc_label = pickle.load(open('selected_features_label_optimized_rfe_dtc.pkl', 'rb'))
+        dtc_attack_cat = pickle.load(open('selected_features_attack_optimized_rfe_dtc.pkl', 'rb'))
+
+
         if classifier == knn_arg:
                 KNN = knn.knn()
                 if task == label_task:
@@ -187,7 +191,7 @@ if classifier == knn_arg:
                 print_prediction_report_for_attack_cat(testing_X, testing_Y_attack_cat, knn_name, True)
 elif classifier == dtc_arg:        
         if task == label_task:
-                print_prediction_report_for_label(testing_X, testing_Y_label, dtc_name, False, True)
+                print_prediction_report_for_label(testing_X, testing_Y_label, dtc_name, False, False)
         elif task == attack_cat_task:
                 print_prediction_report_for_attack_cat(testing_X, testing_Y_attack_cat, dtc_name, False)
 elif classifier == lrc_arg:
