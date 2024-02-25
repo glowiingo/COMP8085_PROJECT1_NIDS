@@ -26,8 +26,7 @@ class knn:
         X_label_train = self.scaler.fit_transform(X_label_train)
         knn_label = KNeighborsClassifier(n_neighbors=self.knn_neighbors_label)    
         self.knn_label = knn_label.fit(X_label_train, y_label)
-        with open('knn_label.pkl', 'wb') as f:
-            pickle.dump(self.knn_label, f)
+
 
 
     def train_attack_cat_model(self, X, y_attack_cat):
@@ -35,9 +34,17 @@ class knn:
         X_attack_cat_train = self.scaler.fit_transform(X_attack_cat_train)
         knn_attack_cat = KNeighborsClassifier(n_neighbors=self.knn_neighbors_attack_cat)
         self.knn_attack_cat = knn_attack_cat.fit(X_attack_cat_train, y_attack_cat)
+        
+    
+
+    def pickle_label_model(self):      
+        with open('knn_label.pkl', 'wb') as f:
+            pickle.dump(self.knn_label, f)
+    
+    def pickle_attack_cat_model(self):
         with open('knn_attack.pkl', 'wb') as f:
             pickle.dump(self.knn_attack_cat, f)
-
+    
 
     def print_prediction_report_for_label(self, X, y):        
         X_label_test = X[SELECTED_FEATURES_LABEL_RFE]
