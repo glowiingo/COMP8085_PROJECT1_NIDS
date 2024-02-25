@@ -162,19 +162,16 @@ else :
         file.close()       
         
         if classifier == knn_arg:
-                KNN = knn.knn()
                 if task == label_task:
                         classifier_model = knn_label
                 elif task == attack_cat_task:
                         classifier_model = knn_attack_cat
         elif classifier == dtc_arg:
-                # DTC
                 if task == label_task:
                         classifier_model = dtc_label
                 elif task == attack_cat_task:
                         classifier_model = dtc_attack_cat
         elif classifier == lrc_arg:
-                #LRC
                 if task == label_task:                        
                         classifier_model = lrc_label
                 elif task == attack_cat_task:                        
