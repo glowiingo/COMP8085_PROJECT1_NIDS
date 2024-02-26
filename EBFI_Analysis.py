@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
+import time
 
 LABEL_INFOGAIN_PNG = 'label_infogain.png'
 ATTACK_INFOGAIN_PNG = 'attack_cat_infogain.png'
@@ -18,14 +19,22 @@ class ebfi_analysis:
         label_train: only label column training data
         attack_cat train: only attack_cat column training data
         """
+        start = time.perf_counter()
         self.x_train = x_train
         self.label_train = label_train
         self.attack_cat_train = attack_cat_train
 
         # function calls
         label_infogain_dict = self.get_label_infogain()
+        end = time.perf_counter()
+        print(f"Experiment on finding Label Selected Features for EBFI Analysis completed in {end - start:0.4f} seconds\n")
+        start = time.perf_counter()
         attack_cat_infogain_dict = self.get_attack_cat_infogain()
+        end = time.perf_counter()
+        print(f"Experiment on finding Attack Selected Features for EBFI Analysis completed in {end - start:0.4f} seconds\n")
+
         self.plot(label_infogain_dict=label_infogain_dict, attack_cat_infogain_dict=attack_cat_infogain_dict)
+        
     
     def entropy(self, y):
         """
@@ -125,7 +134,6 @@ class ebfi_analysis:
         plt.xlabel('Features')
         plt.ylabel('Information Gain for Label')
         plt.savefig(LABEL_INFOGAIN_PNG, bbox_inches="tight")
-        plt.show()
         print("Saved label information gain bar plot in: {}".format(LABEL_INFOGAIN_PNG))
 
         attack_cat_sorted_indices = np.argsort(list(attack_cat_infogain_dict.values()))[::-1]
@@ -139,7 +147,6 @@ class ebfi_analysis:
         plt.xlabel('Features')
         plt.ylabel('Information Gain for Attack Category')
         plt.savefig(ATTACK_INFOGAIN_PNG, bbox_inches="tight")
-        plt.show()
         print("Saved attack infomation gain bar plot in: {}".format(ATTACK_INFOGAIN_PNG))
 
 
