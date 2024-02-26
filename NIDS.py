@@ -1,4 +1,5 @@
 import sys
+import time
 
 from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
@@ -55,19 +56,28 @@ def print_prediction_report_for_label(X_test, y_test, classifier_label, normaliz
     if normalize == True:
             scaler = StandardScaler()
             X_test = scaler.fit_transform(X_test)
+    start_time = time.time()
     y_label_pred = classifier_model.predict(X_test)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
     print('Classifier: ' + classifier_label)
     print(metrics.classification_report(y_test, y_label_pred))
+    print('Elapsed time for classification: ' + str(elapsed_time) + ' seconds')
 
 def print_prediction_report_for_attack_cat(X_test, y_test, classifier_label, normalize):
     X_test = X_test[SELECTED_FEATURES_ATTACK_CAT_RFE]    
     if normalize == True:
             scaler = StandardScaler()
             X_test= scaler.fit_transform(X_test)
+    start_time = time.time()
+    print (start_time)
     y_pred_attack_cat = classifier_model.predict(X_test)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
     print('Classifier: ' + classifier_label)
     print(metrics.classification_report(y_test, y_pred_attack_cat))
-
+    print('Elapsed time for classification: ' + str(elapsed_time) + ' seconds')
+    
 print()
 
 ## CMD Arugments
