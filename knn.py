@@ -14,8 +14,8 @@ from sklearn.metrics.pairwise import np
 
 class knn:
     def __init__(self):
-        self.knn_neighbors_label = 7
-        self.knn_neighbors_attack_cat = 11
+        self.knn_neighbors_label = 21
+        self.knn_neighbors_attack_cat = 21
         self.knn_label = None
         self.knn_attack_cat = None
         self.scaler = StandardScaler()
@@ -65,3 +65,47 @@ class knn:
     
     def get_attack_cat_model(self):
         return self.knn_attack_cat
+    
+    def perform_validation_attack_cat(self, x_train, y_train, x_val, y_val):
+        acc_vals = []
+        x_train_cat = x_train[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        x_train_cat = self.scaler.fit_transform(x_train_cat)
+        x_val_cat = x_val[SELECTED_FEATURES_ATTACK_CAT_RFE]
+        x_val_cat = self.scaler.fit_transform(x_val_cat)
+        
+        k_values = [i for i in range (1,31)]
+        for k in k_values:
+            knnc = KNeighborsClassifier(n_neighbors=k)
+            knnc.fit(x_train_cat, y_train)
+            y_pred = knnc.predict(x_val_cat)
+            
+            accuracy = accuracy_score(y_val, y_pred)
+            print('K value: ' + str(k) + ' Accuracy: ' + str(accuracy))
+            acc_vals.append(accuracy)
+        sns.lineplot(x = k_values, y = acc_vals, marker = 'o')
+        plt.title('Accuracy of Different K Values for Attack Category')
+        plt.xlabel("K Values")
+        plt.ylabel("Accuracy Score")
+        plt.show()
+        
+    def perform_validation_label(self, x_train, y_train, x_val, y_val):
+        acc_vals = []
+        x_train_cat = x_train[SELECTED_FEATURES_LABEL_RFE]
+        x_train_cat = self.scaler.fit_transform(x_train_cat)
+        x_val_cat = x_val[SELECTED_FEATURES_LABEL_RFE]
+        x_val_cat = self.scaler.fit_transform(x_val_cat)
+        
+        k_values = [i for i in range (1,31)]
+        for k in k_values:
+            knnc = KNeighborsClassifier(n_neighbors=k)
+            knnc.fit(x_train_cat, y_train)
+            y_pred = knnc.predict(x_val_cat)
+            
+            accuracy = accuracy_score(y_val, y_pred)
+            print('K value: ' + str(k) + ' Accuracy: ' + str(accuracy))
+            acc_vals.append(accuracy)
+        sns.lineplot(x = k_values, y = acc_vals, marker = 'o')
+        plt.title('Accuracy of Different K Values for Label')
+        plt.xlabel("K Values")
+        plt.ylabel("Accuracy Score")
+        plt.show()

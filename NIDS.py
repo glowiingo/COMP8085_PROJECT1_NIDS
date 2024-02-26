@@ -161,30 +161,33 @@ if option_file_ext != pkl_ext:
 else :
         ## Load models from pickle file    
         file = open(option_file_name, 'rb')
-        knn_label = pickle.load(file)
-        knn_attack_cat = pickle.load(file)
-        dtc_label = pickle.load(file)
-        dtc_attack_cat = pickle.load(file)
-        lrc_label = pickle.load(file)
-        lrc_attack_cat = pickle.load(file)
-        file.close()       
+        classifier_model = pickle.load(file)
+        file.close()
+        # file = open(option_file_name, 'rb')
+        # knn_label = pickle.load(file)
+        # knn_attack_cat = pickle.load(file)
+        # dtc_label = pickle.load(file)
+        # dtc_attack_cat = pickle.load(file)
+        # lrc_label = pickle.load(file)
+        # lrc_attack_cat = pickle.load(file)
+        # file.close()       
 
 
-        if classifier_arg == knn_arg:
-                if task_arg == label_task:
-                        classifier_model = knn_label
-                elif task_arg == attack_cat_task:
-                        classifier_model = knn_attack_cat
-        elif classifier_arg == dtc_arg:
-                if task_arg == label_task:
-                        classifier_model = dtc_label
-                elif task_arg == attack_cat_task:
-                        classifier_model = dtc_attack_cat
-        elif classifier_arg == lrc_arg:
-                if task_arg == label_task:                        
-                        classifier_model = lrc_label
-                elif task_arg == attack_cat_task:                        
-                        classifier_model = lrc_attack_cat
+        # if classifier_arg == knn_arg:
+        #         if task_arg == label_task:
+        #                 classifier_model = knn_label
+        #         elif task_arg == attack_cat_task:
+        #                 classifier_model = knn_attack_cat
+        # elif classifier_arg == dtc_arg:
+        #         if task_arg == label_task:
+        #                 classifier_model = dtc_label
+        #         elif task_arg == attack_cat_task:
+        #                 classifier_model = dtc_attack_cat
+        # elif classifier_arg == lrc_arg:
+        #         if task_arg == label_task:                        
+        #                 classifier_model = lrc_label
+        #         elif task_arg == attack_cat_task:                        
+        #                 classifier_model = lrc_attack_cat
 
 ## Print the report
 if classifier_arg == knn_arg:
