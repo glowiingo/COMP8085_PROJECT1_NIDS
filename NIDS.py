@@ -70,7 +70,6 @@ def print_prediction_report_for_attack_cat(X_test, y_test, classifier_label, nor
             scaler = StandardScaler()
             X_test= scaler.fit_transform(X_test)
     start_time = time.time()
-    print (start_time)
     y_pred_attack_cat = classifier_model.predict(X_test)
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -136,14 +135,13 @@ if option_file_ext != pkl_ext:
       
         if classifier_arg == knn_arg:
                 KNN = knn.knn()
-                if task_arg == label_task:
-                        KNN.train_label_model(X_train, y_label_train)
-                        classifier_model = KNN.get_label_model()            
 
+                if task_arg == label_task:    
+                        KNN.train_label_model(X_train, y_label_train)
+                        classifier_model = KNN.get_label_model()                       
                 elif task_arg == attack_cat_task:
                         KNN.train_attack_cat_model(X_train, y_attack_cat_train)
-                        classifier_model = KNN.get_attack_cat_model()
-
+                        classifier_model = KNN.get_attack_cat_model()                        
         elif classifier_arg == dtc_arg:
                 DTC = dtc.dtc(x_train=X_train, x_test=X_test, x_val=X_val, 
                               label_train=y_label_train, label_test=y_label_test, label_val=y_label_val, 
